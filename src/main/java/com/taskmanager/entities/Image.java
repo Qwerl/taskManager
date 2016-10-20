@@ -1,18 +1,17 @@
 package com.taskmanager.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import lombok.Data;
 
 @Entity
 @Data
+@Table(name = "image") //todo: dic_image maybe?
 public class Image {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "image_id")
   private long id;
 
   private String name;

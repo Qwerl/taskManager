@@ -3,22 +3,23 @@ package com.taskmanager.entities;
 import java.sql.Date;
 import java.util.List;
 import java.util.Observable;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import lombok.Data;
 
 @Entity
 @Data
+@Table(name = "task")
 public class Task {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "task_id")
   private long id;
 
+  @OneToOne
   private Account creator;
+  @OneToOne
   private Account owner;
 
   private String name;
@@ -30,10 +31,14 @@ public class Task {
   private Date updateTime;
 
   private boolean isDone;
+
+  @OneToOne
   private PriorityType priorityType;
+
+  @Enumerated(EnumType.STRING)
   private TaskType taskType;
 
-  private List<Observable> listeners;
+//  private List<Observable> listeners;
 
   public Task(Account creator, PriorityType priorityType, Date deadlineTime) {
     this.creator = creator;
