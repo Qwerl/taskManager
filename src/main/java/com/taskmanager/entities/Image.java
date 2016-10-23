@@ -3,10 +3,12 @@ package com.taskmanager.entities;
 import javax.persistence.*;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Data
 @Table(name = "image") //todo: dic_image maybe?
+@Data
+@NoArgsConstructor
 public class Image {
 
   @Id
@@ -16,10 +18,5 @@ public class Image {
 
   private String name;
   private byte[] file;
-
-  public Image(String name, byte[] file) {
-    this.name = name;
-    this.file = file;
-  }
 
 }

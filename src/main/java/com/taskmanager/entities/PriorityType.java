@@ -5,10 +5,12 @@ import java.awt.*;
 import javax.persistence.*;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Data
 @Table(name = "dic_priority_type")
+@Data
+@NoArgsConstructor
 public class PriorityType {
 
   @Id
@@ -18,10 +20,5 @@ public class PriorityType {
 
   private Color color;
   private String comment;
-
-  public PriorityType(Color color, String comment) {
-    this.color = color;
-    this.comment = comment;
-  }
 
 }

@@ -1,15 +1,15 @@
 package com.taskmanager.entities;
 
-import java.sql.Date;
-import java.util.List;
-import java.util.Observable;
+import java.sql.Timestamp;
 import javax.persistence.*;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Data
 @Table(name = "task")
+@Data
+@NoArgsConstructor
 public class Task {
 
   @Id
@@ -18,21 +18,24 @@ public class Task {
   private long id;
 
   @OneToOne
+  @JoinColumn(name = "creator_account_id", foreignKey = @ForeignKey(name = "fk_task1"))
   private Account creator;
   @OneToOne
+  @JoinColumn(name = "owner_account_id", foreignKey = @ForeignKey(name = "fk_task2"))
   private Account owner;
 
   private String name;
   private String comment;
 
-  private Date createTime;
-  private Date deadlineTime;
-  private Date finishTime;
-  private Date updateTime;
+  private Timestamp createTime;
+  private Timestamp deadlineTime;
+  private Timestamp finishTime;
+  private Timestamp updateTime;
 
   private boolean isDone;
 
   @OneToOne
+  @JoinColumn(name = "dic_priority_type_id", foreignKey = @ForeignKey(name = "fk_task3"))
   private PriorityType priorityType;
 
   @Enumerated(EnumType.STRING)
@@ -40,14 +43,14 @@ public class Task {
 
 //  private List<Observable> listeners;
 
-  public Task(Account creator, PriorityType priorityType, Date deadlineTime) {
+  public Task(Account creator, PriorityType priorityType, Timestamp deadlineTime) {
     this.creator = creator;
     this.priorityType = priorityType;
     this.deadlineTime = deadlineTime;
-    createTime = new Date(System.nanoTime());
+    createTime = new Timestamp(System.nanoTime());
   }
 
-  public Task(Account creator, Account owner, PriorityType priorityType, Date deadlineTime) {
+  public Task(Account creator, Account owner, PriorityType priorityType, Timestamp deadlineTime) {
     this(creator, priorityType, deadlineTime);
     this.owner = owner;
     owner.addTask(this);

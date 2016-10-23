@@ -7,8 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data
 @Table(name = "account")
+@Data
 @NoArgsConstructor
 public class Account {
 
@@ -18,12 +18,12 @@ public class Account {
   private long id;
 
   @OneToOne
+  @JoinColumn(name = "image_id", foreignKey = @ForeignKey(name = "fk_account1"))
   private Image image;
 
-  @Column(name = "username")
   private String username;
 
-  @OneToMany
+  @OneToMany(mappedBy = "owner")
   private List<PreSet> preSets;
 
   public void addTask(Task task) {
