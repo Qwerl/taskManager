@@ -15,7 +15,7 @@ public class Account {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "account_id")
-  private long id;
+  private Long id;
 
   @OneToOne
   @JoinColumn(name = "image_id", foreignKey = @ForeignKey(name = "fk_account1"))
@@ -23,12 +23,17 @@ public class Account {
 
   private String username;
 
-  @OneToMany(mappedBy = "owner")
-  private List<PreSet> preSets;
+  @ManyToMany(cascade = CascadeType.ALL)
+  @JoinTable(
+      name = "account_task",
+      joinColumns = @JoinColumn(name = "account_id"),
+      inverseJoinColumns = @JoinColumn(name = "task_id"),
+      foreignKey = @ForeignKey(name = "fk_account_task1"),
+      inverseForeignKey = @ForeignKey(name = "fk_account_task2")
+  )
+  private List<Task> tasks;
 
-  public void addTask(Task task) {
-    PreSet defaultSet = preSets.get(0);
-    defaultSet.add(task);
-  }
+  @OneToMany(mappedBy = "owner")
+  private List<TaskContainer> taskContainers;
 
 }

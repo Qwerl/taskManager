@@ -15,14 +15,7 @@ public class Task {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "task_id")
-  private long id;
-
-  @OneToOne
-  @JoinColumn(name = "creator_account_id", foreignKey = @ForeignKey(name = "fk_task1"))
-  private Account creator;
-  @OneToOne
-  @JoinColumn(name = "owner_account_id", foreignKey = @ForeignKey(name = "fk_task2"))
-  private Account owner;
+  private Long id;
 
   private String name;
   private String comment;
@@ -35,25 +28,16 @@ public class Task {
   private boolean isDone;
 
   @OneToOne
-  @JoinColumn(name = "dic_priority_type_id", foreignKey = @ForeignKey(name = "fk_task3"))
+  @JoinColumn(name = "dic_priority_type_id", foreignKey = @ForeignKey(name = "fk_task1"))
   private PriorityType priorityType;
 
   @Enumerated(EnumType.STRING)
   private TaskType taskType;
 
-//  private List<Observable> listeners;
-
-  public Task(Account creator, PriorityType priorityType, Timestamp deadlineTime) {
-    this.creator = creator;
+  public Task(PriorityType priorityType, Timestamp deadlineTime) {
     this.priorityType = priorityType;
     this.deadlineTime = deadlineTime;
     createTime = new Timestamp(System.nanoTime());
-  }
-
-  public Task(Account creator, Account owner, PriorityType priorityType, Timestamp deadlineTime) {
-    this(creator, priorityType, deadlineTime);
-    this.owner = owner;
-    owner.addTask(this);
   }
 
 }
