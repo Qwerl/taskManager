@@ -2,24 +2,27 @@ package com.taskmanager.config;
 
 import java.util.Properties;
 import javax.annotation.Resource;
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan({"com.taskmanager"})
-@PropertySource(value = {"classpath:application.properties"})
+@EnableJpaRepositories(basePackages = {"com.taskmanager.repository"}, entityManagerFactoryRef = "entityManagerFactory")
+@ComponentScan("com.taskmanager")
+@PropertySource(value = {"classpath:config/application.properties"})
 public class AppConfig {
 
   private static final String DB_DRIVER = "db.driver";
@@ -47,14 +50,25 @@ public class AppConfig {
   }
 
   @Autowired
-  @Bean(name = "sessionFactory")
-  public SessionFactory getSessionFactory(DataSource dataSource) {
-    LocalSessionFactoryBuilder sessionBuilder = new LocalSessionFactoryBuilder(dataSource);
-    sessionBuilder.scanPackages(env.getRequiredProperty(ENTITYMANAGER_PACKAGES_TO_SCAN));
-    sessionBuilder.addProperties(getHibernateProperties());
-    return sessionBuilder.buildSessionFactory();
+  @Bean(name = "entityManagerFactory")
+  LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, Properties hibernateProperties) {
+    LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
+    entityManagerFactoryBean.setDataSource(dataSource);
+    entityManagerFactoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+    entityManagerFactoryBean.setPackagesToScan(env.getRequiredProperty(ENTITYMANAGER_PACKAGES_TO_SCAN));
+    entityManagerFactoryBean.setJpaProperties(hibernateProperties);
+    return entityManagerFactoryBean;
   }
 
+  @Autowired
+  @Bean(name = "transactionManager")
+  JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+    JpaTransactionManager transactionManager = new JpaTransactionManager();
+    transactionManager.setEntityManagerFactory(entityManagerFactory);
+    return transactionManager;
+  }
+
+  @Bean(name = "hibernateProperties")
   public Properties getHibernateProperties() {
     Properties properties = new Properties();
     properties.put(HIBERNATE_DIALECT, env.getRequiredProperty(HIBERNATE_DIALECT));
@@ -63,12 +77,6 @@ public class AppConfig {
     properties.put(HIBERNATE_TEMP_USE_JDBC_METADATA_DEFAULTS, env.getRequiredProperty(HIBERNATE_TEMP_USE_JDBC_METADATA_DEFAULTS));
     properties.put(HIBERNATE_DEFAULT_SCHEMA, env.getRequiredProperty(HIBERNATE_DEFAULT_SCHEMA));
     return properties;
-  }
-
-  @Autowired
-  @Bean(name = "transactionManager")
-  public HibernateTransactionManager getTransactionManager(SessionFactory sessionFactory) {
-    return new HibernateTransactionManager(sessionFactory);
   }
 
 }
