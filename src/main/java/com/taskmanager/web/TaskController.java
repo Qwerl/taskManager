@@ -5,20 +5,24 @@ import java.util.List;
 import com.taskmanager.entities.Task;
 import com.taskmanager.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/task")
 public class TaskController {
 
   @Autowired
   private TaskService taskService;
 
-  @PostMapping
+  @PostMapping(value = "/task")
   public List<Task> list() {
     return taskService.getTasks();
+  }
+
+  @PostMapping(value = "account/{accountId}/task")
+  public List<Task> listByAccountId(@PathVariable Long accountId) {
+    return taskService.getTasksByAccountId(accountId);
   }
 
 }

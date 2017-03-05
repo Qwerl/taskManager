@@ -17,4 +17,8 @@ public class TaskService {
     return taskRepository.findAll();
   }
 
+  public List<Task> getTasksByAccountId(Long accountId) {
+    return taskRepository.findAllTasksByAccountId(accountId);
+  }
+
 }

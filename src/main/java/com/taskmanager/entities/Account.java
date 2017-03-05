@@ -3,6 +3,7 @@ package com.taskmanager.entities;
 import java.util.List;
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -31,9 +32,11 @@ public class Account {
       foreignKey = @ForeignKey(name = "fk_account_task1"),
       inverseForeignKey = @ForeignKey(name = "fk_account_task2")
   )
+  @JsonIgnore
   private List<Task> tasks;
 
   @OneToMany(mappedBy = "owner")
+  @JsonIgnore
   private List<TaskContainer> taskContainers;
 
 }
